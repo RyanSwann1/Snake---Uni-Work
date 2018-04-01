@@ -1,12 +1,14 @@
-#include <string>
-#include <iostream>
+#include <Game\Game.h>
 
 int main()
 {
-	std::cout << "This is a game of snake!\n";
+	Game game;
+	while (game.isRunning())
+	{
+		game.update();
+		game.draw();
+		game.lateUpdate();
+	}
 
-
-	char c;
-	std::cin >> c;
 	return 0;
 }
