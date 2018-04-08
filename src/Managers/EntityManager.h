@@ -18,13 +18,57 @@ class EntityManager
 	class EntityInQueue
 	{
 	public:
-		EntityInQueue(const sf::Vector2f& startingPosition, std::string&& entityName)
+		EntityInQueue(const sf::Vector2f& startingPosition, std::string&& entityName, EntityTag entityTag)
 			: m_startingPosition(startingPosition),
-			m_entityName(std::move(entityName))
+			m_entityName(std::move(entityName)),
+			m_entityTag(entityTag)
 		{}
 		
 		const sf::Vector2f m_startingPosition;
 		const std::string m_entityName;
+		const EntityTag m_entityTag;
+	};
+
+	class ComponentFactory
+	{
+	public:
+		ComponentFactory();
+		ComponentFactory(const ComponentFactory&) = delete;
+		ComponentFactory& operator=(const ComponentFactory&) = delete;
+		ComponentFactory(ComponentFactory&&) = delete;
+		ComponentFactory&& operator=(ComponentFactory&&) = delete;
+
+		std::unique_ptr<ComponentBase> getComponent(ComponentType type) const;
+
+	private:
+		std::unordered_map<ComponentType, std::function<std::unique_ptr<ComponentBase>()>> m_componentFactory;
+
+		template <class Component>
+		void registerComponent(ComponentType type)
+		{
+			assert(m_componentFactory.find(type) == m_componentFactory.cend());
+			m_componentFactory.emplace(type, [type]() -> std::unique_ptr<Component>
+			{
+				return std::make_unique<Component>(type);
+			});
+		}
+	};
+
+	class EntityComponentFactory
+	{
+	public:
+		EntityComponentFactory();
+		EntityComponentFactory(const EntityComponentFactory&) = delete;
+		EntityComponentFactory& operator=(const EntityComponentFactory&) = delete;
+		EntityComponentFactory(EntityComponentFactory&&) = delete;
+		EntityComponentFactory&& operator=(EntityComponentFactory&&) = delete;
+	
+		std::vector<ComponentType> getEntityComponents(const std::string& entityName) const;
+
+	private:
+		std::unordered_map<std::string, std::vector<ComponentType>> m_entityComponentFactory;
+	
+		void registerEntityComponents(std::string&& entityName, std::vector<ComponentType>&& entityComponents);
 	};
 
 	class EntityFactory
@@ -36,20 +80,12 @@ class EntityManager
 		EntityFactory(EntityFactory&&) = delete;
 		EntityFactory&& operator=(EntityFactory&&) = delete;
 
-		std::unique_ptr<Entity> getEntity(const std::string& entityName, const sf::Vector2f& startingPosition, int entityID) const;
+		Entity getEntity(const std::string& entityName, int entityID, EntityTag entityTag) const;
 
 	private:
-		std::unordered_map<std::string, std::function<std::unique_ptr<Entity>(const sf::Vector2f&, int)>> m_entityFactory;
+		std::unordered_map<std::string, std::function<Entity(int, EntityTag)>> m_entityFactory;
 
-		template <class T>
-		void registerEntity(std::string&& name)
-		{
-			assert(m_entityFactory.find(name) == m_entityFactory.cend());
-			m_entityFactory.emplace(std::move(name), [](const sf::Vector2f& startingPosition, int entityID) -> std::unique_ptr<T>
-			{
-				return std::make_unique<T>(startingPosition, entityID);
-			});
-		}
+		void registerEntity(std::string&& name);
 	};
 
 public:
@@ -59,20 +95,28 @@ public:
 	EntityManager(EntityManager&&) = delete;
 	EntityManager&& operator=(EntityManager&&) = delete;
 
-	void addEntity(const sf::Vector2f& startingPosition, std::string&& entityName);
+	void addEntity(const sf::Vector2f& startingPosition, std::string&& entityName, EntityTag entityTag);
 	void removeEntity(int entityID);
 
 	void update(float deltaTime);
-	void draw(sf::RenderWindow& window) const;
 
 private:
+	const ComponentFactory m_componentFactory;
+	const EntityComponentFactory m_entityComponentFactory;
 	const EntityFactory m_entityFactory;
 	std::vector<int> m_entityRemovals;
 	std::deque<EntityInQueue> m_entityQueue;
-	std::list<std::unique_ptr<Entity>> m_entities;
+	std::list<Entity> m_entities;
 	int m_entityCounter; //ID for each entity
 
 	void handleEntityQueue();
 	void handleRemovals();
 	void addEntityFromQueue(const EntityInQueue& entityInQueue);
+
+	template <class Component>
+	Component& getEntityComponent(Entity& entity, ComponentType componentType)
+	{
+		assert(entity.m_components[static_cast<int>(componentType)].get());
+		return *static_cast<Component*>(entity.m_components[static_cast<int>(componentType)].get());
+	}
 };
