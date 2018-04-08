@@ -12,6 +12,8 @@ bool Game::isRunning() const
 
 void Game::update()
 {
+
+
 	m_window.update();
 }
 
@@ -23,4 +25,5 @@ void Game::draw()
 
 void Game::lateUpdate()
 {
+
 }

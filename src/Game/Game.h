@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Window\Window.h>
+#include <Managers\EntityManager.h>
 
 class Game
 {
@@ -17,5 +18,6 @@ public:
 	void lateUpdate();
 
 private:
+	EntityManager m_entityManager;
 	Window m_window;
 };
