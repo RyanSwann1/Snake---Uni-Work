@@ -2,10 +2,10 @@
 
 #include <functional>
 #include <Entity\Entity.h>
+#include <Entity\EntityName.h>
 #include <Components\ComponentType.h>
 #include <list>
 #include <unordered_map>
-#include <string>
 #include <vector>
 #include <SFML\Graphics.hpp>
 #include <utility>
@@ -18,14 +18,14 @@ class EntityManager
 	class EntityInQueue
 	{
 	public:
-		EntityInQueue(const sf::Vector2f& startingPosition, std::string&& entityName, EntityTag entityTag)
+		EntityInQueue(const sf::Vector2f& startingPosition, EntityName entityName, EntityTag entityTag)
 			: m_startingPosition(startingPosition),
 			m_entityName(std::move(entityName)),
 			m_entityTag(entityTag)
 		{}
 		
 		const sf::Vector2f m_startingPosition;
-		const std::string m_entityName;
+		const EntityName m_entityName;
 		const EntityTag m_entityTag;
 	};
 
@@ -63,12 +63,12 @@ class EntityManager
 		EntityComponentFactory(EntityComponentFactory&&) = delete;
 		EntityComponentFactory&& operator=(EntityComponentFactory&&) = delete;
 	
-		std::vector<ComponentType> getEntityComponents(const std::string& entityName) const;
+		std::vector<ComponentType> getEntityComponents(EntityName entityName) const;
 
 	private:
-		std::unordered_map<std::string, std::vector<ComponentType>> m_entityComponentFactory;
+		std::unordered_map<EntityName, std::vector<ComponentType>> m_entityComponentFactory;
 	
-		void registerEntityComponents(std::string&& entityName, std::vector<ComponentType>&& entityComponents);
+		void registerEntityComponents(EntityName entityName, std::vector<ComponentType>&& entityComponents);
 	};
 
 	class EntityFactory
@@ -80,12 +80,12 @@ class EntityManager
 		EntityFactory(EntityFactory&&) = delete;
 		EntityFactory&& operator=(EntityFactory&&) = delete;
 
-		Entity getEntity(const std::string& entityName, int entityID, EntityTag entityTag) const;
+		Entity getEntity(EntityName entityName, int entityID, EntityTag entityTag) const;
 
 	private:
-		std::unordered_map<std::string, std::function<Entity(int, EntityTag)>> m_entityFactory;
+		std::unordered_map<EntityName, std::function<Entity(int, EntityTag)>> m_entityFactory;
 
-		void registerEntity(std::string&& name);
+		void registerEntity(EntityName entityName);
 	};
 
 public:
@@ -95,10 +95,19 @@ public:
 	EntityManager(EntityManager&&) = delete;
 	EntityManager&& operator=(EntityManager&&) = delete;
 
-	void addEntity(const sf::Vector2f& startingPosition, std::string&& entityName, EntityTag entityTag);
+	template <class Component>
+	Component& getEntityComponent(Entity& entity, ComponentType componentType) const
+	{
+		assert(entity.m_components[static_cast<int>(componentType)].get());
+		auto& component = entity.m_components[static_cast<int>(componentType)];
+		return *static_cast<Component*>(component.get());
+	}
+
+	std::list<Entity>& getEntities() { return m_entities; }
+	void addEntity(const sf::Vector2f& startingPosition, EntityName entityName, EntityTag entityTag);
 	void removeEntity(int entityID);
 
-	void update(float deltaTime);
+	void update();
 
 private:
 	const ComponentFactory m_componentFactory;
@@ -112,11 +121,4 @@ private:
 	void handleEntityQueue();
 	void handleRemovals();
 	void addEntityFromQueue(const EntityInQueue& entityInQueue);
-
-	template <class Component>
-	Component& getEntityComponent(Entity& entity, ComponentType componentType)
-	{
-		assert(entity.m_components[static_cast<int>(componentType)].get());
-		return *static_cast<Component*>(entity.m_components[static_cast<int>(componentType)].get());
-	}
 };

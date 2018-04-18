@@ -6,6 +6,11 @@ Window::Window(const sf::Vector2i& size, std::string&& name)
 	m_fullScreen(false)
 {}
 
+sf::RenderWindow & Window::getWindow()
+{
+	return m_window;
+}
+
 bool Window::isOpen() const
 {
 	return m_window.isOpen();

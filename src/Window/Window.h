@@ -12,7 +12,9 @@ public:
 	Window(Window&&) = delete;
 	Window&& operator=(Window&&) = delete;
 
+	sf::RenderWindow& getWindow();
 	bool isOpen() const;
+
 	void clearScreen();
 	void update();
 	void display();

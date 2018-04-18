@@ -6,8 +6,11 @@ class ComponentDrawable : public ComponentBase
 {
 public:
 	ComponentDrawable(ComponentType type)
-		: ComponentBase(type)
+		: ComponentBase(type),
+		m_sprite()
 	{
 
 	}
+
+	sf::Sprite m_sprite;
 };

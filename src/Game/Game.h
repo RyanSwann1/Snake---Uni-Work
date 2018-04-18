@@ -2,6 +2,7 @@
 
 #include <Window\Window.h>
 #include <Managers\EntityManager.h>
+#include <Managers\SystemManager.h>
 
 class Game
 {
@@ -18,6 +19,7 @@ public:
 	void lateUpdate();
 
 private:
+	const SystemManager m_systemManager;
 	EntityManager m_entityManager;
 	Window m_window;
 };

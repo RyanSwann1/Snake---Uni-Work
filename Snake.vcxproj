@@ -123,8 +123,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Locators\EntityManagerLocator.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Managers\EntityManager.cpp" />
+    <ClCompile Include="src\Managers\SystemManager.cpp" />
+    <ClCompile Include="src\Systems\SystemBase.cpp" />
+    <ClCompile Include="src\Systems\SystemDrawable.cpp" />
     <ClCompile Include="src\Systems\SystemSnake.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
@@ -135,10 +139,16 @@
     <ClInclude Include="src\Components\ComponentSnake.h" />
     <ClInclude Include="src\Components\ComponentType.h" />
     <ClInclude Include="src\Entity\Entity.h" />
+    <ClInclude Include="src\Entity\EntityName.h" />
     <ClInclude Include="src\Entity\EntityTag.h" />
     <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Locators\EntityManagerLocator.h" />
     <ClInclude Include="src\Managers\EntityManager.h" />
+    <ClInclude Include="src\Managers\SystemManager.h" />
+    <ClInclude Include="src\Systems\SystemBase.h" />
+    <ClInclude Include="src\Systems\SystemDrawable.h" />
     <ClInclude Include="src\Systems\SystemSnake.h" />
+    <ClInclude Include="src\Systems\SystemType.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

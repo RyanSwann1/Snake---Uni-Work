@@ -4,13 +4,13 @@
 #include <vector>
 #include <SFML\Graphics.hpp>
 
+class ComponentPosition;
 class ComponentSnake : public ComponentBase
 {
 public:
 	ComponentSnake(ComponentType type)
-		: ComponentBase(type),
-		m_snake()
+		: ComponentBase(type)
 	{}
 
-	std::vector<sf::RectangleShape> m_snake;
+	std::vector<std::unique_ptr<ComponentPosition>> m_snake;
 };
