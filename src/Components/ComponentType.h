@@ -6,5 +6,6 @@ enum class ComponentType
 	Drawable, 
 	Player,
 	Position,
+	Movable,
 	Total
 };

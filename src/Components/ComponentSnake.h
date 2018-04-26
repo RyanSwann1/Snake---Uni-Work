@@ -1,16 +1,16 @@
 #pragma once
 
-#include "ComponentBase.h"
+#include "ComponentPosition.h"
 #include <vector>
-#include <SFML\Graphics.hpp>
+#include <memory>
 
-class ComponentPosition;
 class ComponentSnake : public ComponentBase
 {
 public:
 	ComponentSnake(ComponentType type)
-		: ComponentBase(type)
+		: ComponentBase(type),
+		m_snake()
 	{}
 
-	std::vector<std::unique_ptr<ComponentPosition>> m_snake;
+	std::vector<std::pair<std::unique_ptr<ComponentPosition>, std::unique_ptr<ComponentDrawable>>> m_snake;
 };

@@ -1,12 +1,15 @@
 #include "Game.h"
-#include <Locators\EntityManagerLocator.h>
-#include <iostream>
 
 Game::Game()
-	: m_entityManager(),
-	m_window(sf::Vector2i(480, 640), "Snake")
+	: m_systemManager(),
+	m_textureManager(),
+	m_entityManager(),
+	m_window(sf::Vector2i(480, 640), "Snake"),
+	m_gameClock(),
+	m_gameLogic()
 {
-	m_entityManager.addEntity(sf::Vector2f(64, 64), EntityName::Snake, EntityTag::Snake);
+	m_textureManager.addResource("CollidableTile.PNG");
+	m_entityManager.addEntity(sf::Vector2f(64, 64), EntityName::Snake, EntityTag::PlayerSnake);
 }
 
 bool Game::isRunning() const
@@ -16,6 +19,7 @@ bool Game::isRunning() const
 
 void Game::update()
 {
+	m_gameLogic.update();
 	m_systemManager.update();
 	m_entityManager.update();
 	m_window.update();
@@ -30,5 +34,5 @@ void Game::draw()
 
 void Game::lateUpdate()
 {
-
+	m_gameClock.update();
 }

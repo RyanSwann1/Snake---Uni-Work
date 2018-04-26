@@ -8,7 +8,8 @@ class ComponentPosition : public ComponentBase
 public:
 	ComponentPosition(ComponentType type)
 		: ComponentBase(type),
-		m_position()
+		m_position(),
+		m_oldPosition()
 	{}
 
 	sf::Vector2f m_position;

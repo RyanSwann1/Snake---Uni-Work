@@ -3,6 +3,9 @@
 #include <Window\Window.h>
 #include <Managers\EntityManager.h>
 #include <Managers\SystemManager.h>
+#include <Managers\TextureManager.h>
+#include <Game\GameClock.h>
+#include <Game\GameLogic.h>
 
 class Game
 {
@@ -19,7 +22,10 @@ public:
 	void lateUpdate();
 
 private:
-	const SystemManager m_systemManager;
+	SystemManager m_systemManager;
+	TextureManager m_textureManager;
 	EntityManager m_entityManager;
 	Window m_window;
+	GameClock m_gameClock;
+	GameLogic m_gameLogic;
 };

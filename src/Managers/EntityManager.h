@@ -96,7 +96,7 @@ public:
 	EntityManager&& operator=(EntityManager&&) = delete;
 
 	template <class Component>
-	Component& getEntityComponent(Entity& entity, ComponentType componentType) const
+	Component& getEntityComponent(const Entity& entity, ComponentType componentType) const
 	{
 		assert(entity.m_components[static_cast<int>(componentType)].get());
 		auto& component = entity.m_components[static_cast<int>(componentType)];

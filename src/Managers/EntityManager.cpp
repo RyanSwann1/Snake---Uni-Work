@@ -3,6 +3,11 @@
 #include <Components\ComponentSnake.h>
 #include <Components\ComponentPosition.h>
 #include <Locators\EntityManagerLocator.h>
+#include <Components\ComponentMovable.h>
+
+//To Remove - POSSIBLY
+#include <Locators\TextureManagerLocator.h>
+#include <Managers\TextureManager.h>
 
 //Component Factory
 EntityManager::ComponentFactory::ComponentFactory()
@@ -10,6 +15,8 @@ EntityManager::ComponentFactory::ComponentFactory()
 	registerComponent<ComponentDrawable>(ComponentType::Drawable);
 	registerComponent<ComponentPosition>(ComponentType::Position);
 	registerComponent<ComponentSnake>(ComponentType::Snake);
+	registerComponent<ComponentBase>(ComponentType::Player);
+	registerComponent<ComponentMovable>(ComponentType::Movable);
 }
 
 std::unique_ptr<ComponentBase> EntityManager::ComponentFactory::getComponent(ComponentType type) const
@@ -23,8 +30,9 @@ std::unique_ptr<ComponentBase> EntityManager::ComponentFactory::getComponent(Com
 EntityManager::EntityComponentFactory::EntityComponentFactory()
 {
 	//Register entity components
-	registerEntityComponents(EntityName::Snake, { ComponentType::Player });
-
+	registerEntityComponents(EntityName::Snake, { ComponentType::Player, ComponentType::Position, 
+		ComponentType::Drawable, ComponentType::Snake, ComponentType::Movable });
+	registerEntityComponents(EntityName::SnakeTail, { ComponentType::Position, ComponentType::Drawable,});
 }
 
 std::vector<ComponentType> EntityManager::EntityComponentFactory::getEntityComponents(EntityName entityName) const
@@ -43,7 +51,10 @@ void EntityManager::EntityComponentFactory::registerEntityComponents(EntityName 
 //Entity Factory
 EntityManager::EntityFactory::EntityFactory()
 	: m_entityFactory()
-{}
+{
+	registerEntity(EntityName::Snake);
+	registerEntity(EntityName::SnakeTail);
+}
 
 Entity EntityManager::EntityFactory::getEntity(EntityName entityName, int entityID, EntityTag entityTag) const
 {
@@ -104,7 +115,7 @@ void EntityManager::handleEntityQueue()
 
 void EntityManager::handleRemovals()
 {
-	for (auto entityIDToRemove : m_entityRemovals)
+	for (const auto entityIDToRemove : m_entityRemovals)
 	{
 		auto iter = std::find_if(m_entities.begin(), m_entities.end(), [entityIDToRemove]
 		(const auto& entity) { return entity.m_ID == entityIDToRemove; });
@@ -118,23 +129,48 @@ void EntityManager::handleRemovals()
 
 void EntityManager::addEntityFromQueue(const EntityInQueue& entityInQueue)
 {
+	//Assign entity components
 	const auto entityComponentTypes = m_entityComponentFactory.getEntityComponents(entityInQueue.m_entityName);
 	Entity entity = m_entityFactory.getEntity(entityInQueue.m_entityName, m_entityCounter, entityInQueue.m_entityTag);
-	//Assign entity components
 	for (const auto componentType : entityComponentTypes)
 	{
 		entity.m_components[static_cast<int>(componentType)] = m_componentFactory.getComponent(componentType);
 	}
-	
+
 	//Will change at some point
 	//Initialize Entities
 	switch (entityInQueue.m_entityName)
 	{
-	case EntityName::Snake :
+	case EntityName::Snake:
 	{
-		auto& snakeComponent = getEntityComponent<ComponentSnake>(entity, ComponentType::Position);
+		auto& snakeComponent = getEntityComponent<ComponentSnake>(entity, ComponentType::Snake);
 		snakeComponent.m_snake.push_back(std::make_unique<ComponentPosition>(ComponentType::Position));
 		snakeComponent.m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
+
+		auto& drawableComponent = getEntityComponent<ComponentDrawable>(entity, ComponentType::Drawable);
+		drawableComponent.m_sprite.setTexture(TextureManagerLocator::get().getResource("CollidableTile.PNG"));
+
+		//const auto& snake = static_cast<ComponentSnake*>(entity.m_components[static_cast<int>(ComponentType::Snake)].get());
+		//snake->m_snake.push_back(std::make_unique<ComponentPosition>(ComponentType::Position));
+		//snake->m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
+		//int i = 0;
+		////snakeComponent.m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
+		break;
+	}
+	case EntityName::SnakeTail :
+	{
+		auto& snakeComponent = getEntityComponent<ComponentSnake>(entity, ComponentType::Snake);
+		snakeComponent.m_snake.push_back(std::make_unique<ComponentPosition>(ComponentType::Position));
+		snakeComponent.m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
+
+		auto& drawableComponent = getEntityComponent<ComponentDrawable>(entity, ComponentType::Drawable);
+		drawableComponent.m_sprite.setTexture(TextureManagerLocator::get().getResource("CollidableTile.PNG"));
+
+		//const auto& snake = static_cast<ComponentSnake*>(entity.m_components[static_cast<int>(ComponentType::Snake)].get());
+		//snake->m_snake.push_back(std::make_unique<ComponentPosition>(ComponentType::Position));
+		//snake->m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
+		//int i = 0;
+		////snakeComponent.m_snake.back().get()->m_position = entityInQueue.m_startingPosition;
 		break;
 	}
 	}

@@ -4,7 +4,9 @@
 Window::Window(const sf::Vector2i& size, std::string&& name)
 	: m_window(sf::VideoMode(size.x, size.y), std::move(name), sf::Style::Default),
 	m_fullScreen(false)
-{}
+{
+	m_window.setFramerateLimit(60);
+}
 
 sf::RenderWindow & Window::getWindow()
 {
@@ -24,14 +26,11 @@ void Window::clearScreen()
 void Window::update()
 {
 	sf::Event sfmlEvent;
-	while (m_window.isOpen())
+	while (m_window.pollEvent(sfmlEvent))
 	{
-		while (m_window.pollEvent(sfmlEvent))
+		if (sfmlEvent.type == sf::Event::Closed)
 		{
-			if (sfmlEvent.type == sf::Event::Closed)
-			{
-				closeWindow();
-			}
+			closeWindow();
 		}
 	}
 }
