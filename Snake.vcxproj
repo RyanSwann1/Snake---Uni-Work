@@ -123,30 +123,51 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Game\Game.cpp" />
+    <ClCompile Include="src\Game\GameClock.cpp" />
+    <ClCompile Include="src\Game\GameLogic.cpp" />
     <ClCompile Include="src\Locators\EntityManagerLocator.cpp" />
+    <ClCompile Include="src\Locators\GameClockLocator.cpp" />
+    <ClCompile Include="src\Locators\GameLogicLocator.cpp" />
+    <ClCompile Include="src\Locators\TextureManagerLocator.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Managers\EntityManager.cpp" />
     <ClCompile Include="src\Managers\SystemManager.cpp" />
     <ClCompile Include="src\Systems\SystemBase.cpp" />
     <ClCompile Include="src\Systems\SystemDrawable.cpp" />
+    <ClCompile Include="src\Systems\SystemMovable.cpp" />
+    <ClCompile Include="src\Systems\SystemPlayerController.cpp" />
     <ClCompile Include="src\Systems\SystemSnake.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Components\ComponentBase.h" />
     <ClInclude Include="src\Components\ComponentDrawable.h" />
+    <ClInclude Include="src\Components\ComponentMovable.h" />
     <ClInclude Include="src\Components\ComponentPosition.h" />
     <ClInclude Include="src\Components\ComponentSnake.h" />
     <ClInclude Include="src\Components\ComponentType.h" />
+    <ClInclude Include="src\Components\ComponentSnakeTail.h" />
     <ClInclude Include="src\Entity\Entity.h" />
     <ClInclude Include="src\Entity\EntityName.h" />
     <ClInclude Include="src\Entity\EntityTag.h" />
+    <ClInclude Include="src\Game\Direction.h" />
     <ClInclude Include="src\Game\Game.h" />
+    <ClInclude Include="src\Game\GameClock.h" />
+    <ClInclude Include="src\Game\GameLogic.h" />
     <ClInclude Include="src\Locators\EntityManagerLocator.h" />
+    <ClInclude Include="src\Locators\GameClockLocator.h" />
+    <ClInclude Include="src\Locators\GameLogicLocator.h" />
+    <ClInclude Include="src\Locators\TextureManagerLocator.h" />
     <ClInclude Include="src\Managers\EntityManager.h" />
+    <ClInclude Include="src\Managers\ResourceManager.h" />
     <ClInclude Include="src\Managers\SystemManager.h" />
+    <ClInclude Include="src\Managers\TextureManager.h" />
     <ClInclude Include="src\Systems\SystemBase.h" />
     <ClInclude Include="src\Systems\SystemDrawable.h" />
+    <ClInclude Include="src\Systems\SystemEvent.h" />
+    <ClInclude Include="src\Systems\SystemMessage.h" />
+    <ClInclude Include="src\Systems\SystemMovable.h" />
+    <ClInclude Include="src\Systems\SystemPlayerController.h" />
     <ClInclude Include="src\Systems\SystemSnake.h" />
     <ClInclude Include="src\Systems\SystemType.h" />
     <ClInclude Include="src\Window\Window.h" />
